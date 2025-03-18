@@ -1,6 +1,7 @@
 package mk.ukim.finki.emt.service.impl;
 
 import mk.ukim.finki.emt.model.Country;
+import mk.ukim.finki.emt.model.dto.CountryDto;
 import mk.ukim.finki.emt.repository.CountryRepository;
 import mk.ukim.finki.emt.service.CountryService;
 import org.springframework.stereotype.Service;
@@ -28,12 +29,12 @@ public class CountryServiceImpl implements CountryService {
     }
 
     @Override
-    public Optional<Country> save(Country country) {
-        return Optional.of(this.countryRepository.save(country));
+    public Optional<Country> save(CountryDto country) {
+        return Optional.of(this.countryRepository.save(new Country(country.getName(), country.getContinent())));
     }
 
     @Override
-    public Optional<Country> update(Long id, Country country) {
+    public Optional<Country> update(Long id, CountryDto country) {
         return this.countryRepository.findById(id).map(existingCountry -> {
             if (country.getName() != null) {
                 existingCountry.setName(country.getName());

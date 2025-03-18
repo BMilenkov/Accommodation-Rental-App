@@ -2,6 +2,7 @@ package mk.ukim.finki.emt.web;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import mk.ukim.finki.emt.model.Country;
+import mk.ukim.finki.emt.model.dto.CountryDto;
 import mk.ukim.finki.emt.service.CountryService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,14 +33,14 @@ public class CountryController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Country> save(@RequestBody Country country) {
+    public ResponseEntity<Country> save(@RequestBody CountryDto country) {
         return this.countryService.save(country)
-                .map(c -> ResponseEntity.ok().body(c))
+                .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
     @PutMapping("/edit/{id}")
-    public ResponseEntity<Country> update(@PathVariable Long id, @RequestBody Country country) {
+    public ResponseEntity<Country> update(@PathVariable Long id, @RequestBody CountryDto country) {
         return this.countryService.update(id, country)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());

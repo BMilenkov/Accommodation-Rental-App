@@ -2,6 +2,7 @@ package mk.ukim.finki.emt.web;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import mk.ukim.finki.emt.model.Host;
+import mk.ukim.finki.emt.model.dto.HostDto;
 import mk.ukim.finki.emt.service.HostService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,14 +33,14 @@ public class HostController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Host> save(@RequestBody Host host) {
+    public ResponseEntity<Host> save(@RequestBody HostDto host) {
         return this.hostService.save(host)
                 .map(m -> ResponseEntity.ok().body(m))
                 .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
     @PutMapping("/edit/{id}")
-    public ResponseEntity<Host> update(@PathVariable Long id, @RequestBody Host host) {
+    public ResponseEntity<Host> update(@PathVariable Long id, @RequestBody HostDto host) {
         return this.hostService.update(id, host)
                 .map(m -> ResponseEntity.ok().body(m))
                 .orElseGet(() -> ResponseEntity.notFound().build());

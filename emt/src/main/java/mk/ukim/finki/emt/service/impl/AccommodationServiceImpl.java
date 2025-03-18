@@ -2,6 +2,7 @@ package mk.ukim.finki.emt.service.impl;
 
 import mk.ukim.finki.emt.model.Accommodation;
 import mk.ukim.finki.emt.model.dto.AccommodationDto;
+import mk.ukim.finki.emt.model.enumerations.Category;
 import mk.ukim.finki.emt.repository.AccommodationRepository;
 import mk.ukim.finki.emt.service.AccommodationService;
 import mk.ukim.finki.emt.service.HostService;
@@ -73,5 +74,25 @@ public class AccommodationServiceImpl implements AccommodationService {
             accommodation.setNumRooms(0);
             return accommodationRepository.save(accommodation);
         });
+    }
+
+    @Override
+    public List<Accommodation> findByFilters(String name, Category category, Long hostId) {
+        if (name != null && category != null && hostId != null) {
+            return accommodationRepository.findAllByNameContainingIgnoreCaseAndCategoryAndHost_Id(name, category, hostId);
+        } else if (name != null && category != null) {
+            return accommodationRepository.findAllByNameContainingIgnoreCaseAndCategory(name, category);
+        } else if (name != null && hostId != null) {
+            return accommodationRepository.findAllByNameContainingIgnoreCaseAndHost_Id(name, hostId);
+        } else if (category != null && hostId != null) {
+            return accommodationRepository.findAllByCategoryAndHost_Id(category, hostId);
+        } else if (name != null) {
+            return accommodationRepository.findAllByNameContainingIgnoreCase(name);
+        } else if (category != null) {
+            return accommodationRepository.findAllByCategory(category);
+        } else if (hostId != null) {
+            return accommodationRepository.findAllByHost_Id(hostId);
+        }
+        return findAll();
     }
 }

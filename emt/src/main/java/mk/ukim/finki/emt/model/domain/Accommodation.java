@@ -1,8 +1,7 @@
-package mk.ukim.finki.emt.model;
+package mk.ukim.finki.emt.model.domain;
 
 import jakarta.persistence.*;
 import mk.ukim.finki.emt.model.enumerations.Category;
-import lombok.*;
 
 @Entity
 public class Accommodation {
@@ -29,6 +28,8 @@ public class Accommodation {
 
     public Accommodation() {
     }
+
+    public Long getId() {return id;}
 
     public String getName() {
         return name;

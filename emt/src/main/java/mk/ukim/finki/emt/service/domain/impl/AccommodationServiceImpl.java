@@ -1,29 +1,30 @@
 package mk.ukim.finki.emt.service.domain.impl;
 
+import mk.ukim.finki.emt.events.AccommodationEvent;
 import mk.ukim.finki.emt.model.domain.Accommodation;
+import mk.ukim.finki.emt.model.enumerations.AccommodationChangeType;
 import mk.ukim.finki.emt.model.enumerations.Category;
+import mk.ukim.finki.emt.model.exceptions.AccommodationNotFoundException;
 import mk.ukim.finki.emt.repository.AccommodationRepository;
-import mk.ukim.finki.emt.repository.ReviewRepository;
-import mk.ukim.finki.emt.service.application.HostApplicationService;
 import mk.ukim.finki.emt.service.domain.AccommodationService;
+import mk.ukim.finki.emt.service.domain.HostProfileService;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.IntStream;
 
 @Service
 public class AccommodationServiceImpl implements AccommodationService {
 
     private final AccommodationRepository accommodationRepository;
-    private final HostApplicationService hostService;
-    private final ReviewRepository reviewRepository;
+    private final HostProfileService hostProfileService;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
-    public AccommodationServiceImpl(AccommodationRepository accommodationRepository, HostApplicationService hostService, ReviewRepository reviewRepository) {
+    public AccommodationServiceImpl(AccommodationRepository accommodationRepository, HostProfileService hostProfileService, ApplicationEventPublisher applicationEventPublisher) {
         this.accommodationRepository = accommodationRepository;
-        this.hostService = hostService;
-
-        this.reviewRepository = reviewRepository;
+        this.hostProfileService = hostProfileService;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     @Override
@@ -38,13 +39,16 @@ public class AccommodationServiceImpl implements AccommodationService {
 
     @Override
     public Optional<Accommodation> save(Accommodation accommodation) {
+        Optional<Accommodation> savedAccommodation = Optional.empty();
         if (accommodation.getCategory() != null &&
-                accommodation.getHost() != null && this.hostService.findByUsername(accommodation.getHost().getUsername()).isPresent()) {
-            return Optional.of(
-                    this.accommodationRepository.save(new Accommodation(accommodation.getName(), accommodation.getCategory(),
-                            accommodation.getHost(), accommodation.getNumRooms())));
+                accommodation.getHostProfile() != null && this.hostProfileService.findById(accommodation.getHostProfile().getId()).isPresent()) {
+
+            savedAccommodation = Optional.of(this.accommodationRepository.save(new Accommodation(accommodation.getName(), accommodation.getCategory(),
+                    accommodation.getHostProfile(), accommodation.getNumRooms())));
+
+            this.applicationEventPublisher.publishEvent(new AccommodationEvent(savedAccommodation.get(), AccommodationChangeType.CREATED));
         }
-        return Optional.empty();
+        return savedAccommodation;
     }
 
     @Override
@@ -57,57 +61,57 @@ public class AccommodationServiceImpl implements AccommodationService {
                     if (accommodation.getCategory() != null) {
                         existingAccommodation.setCategory(accommodation.getCategory());
                     }
-                    if (accommodation.getHost() != null && this.hostService.findByUsername(accommodation.getHost().getUsername()).isPresent()) {
-                        existingAccommodation.setHost(accommodation.getHost());
+                    if (accommodation.getHostProfile() != null && this.hostProfileService.findById(accommodation.getHostProfile().getId()).isPresent()) {
+                        existingAccommodation.setHostProfile(accommodation.getHostProfile());
                     }
                     if (accommodation.getNumRooms() != null) {
                         existingAccommodation.setNumRooms(accommodation.getNumRooms());
                     }
-                    return this.accommodationRepository.save(existingAccommodation);
+
+                    Accommodation saved = this.accommodationRepository.save(existingAccommodation);
+                    this.applicationEventPublisher.publishEvent(new AccommodationEvent(saved, AccommodationChangeType.UPDATED));
+                    return saved;
                 });
     }
 
     @Override
     public void deleteById(Long id) {
+        Accommodation accommodation = this.accommodationRepository.findById(id).orElseThrow(() -> new AccommodationNotFoundException(id));
         this.accommodationRepository.deleteById(id);
+        this.applicationEventPublisher.publishEvent(new AccommodationEvent(accommodation, AccommodationChangeType.DELETED));
     }
 
     @Override
     public Optional<Accommodation> markAsRented(Long id) {
         return accommodationRepository.findById(id).map(accommodation -> {
             accommodation.setNumRooms(0);
+            accommodation.setIsRented(true);
             return accommodationRepository.save(accommodation);
         });
     }
 
     @Override
-    public List<Accommodation> findByFilters(String name, Category category, String hostId) {
+    public List<Accommodation> findByFilters(String name, Category category, Long hostProfileId) {
 
         boolean hasName = name != null && !name.isEmpty();
         boolean hasCategory = category != null;
-        boolean hasHost = hostId != null && !hostId.isEmpty();
+        boolean hasHost = hostProfileId != null;
 
         if (hasName && hasCategory && hasHost) {
-            return accommodationRepository.findAllByNameContainingIgnoreCaseAndCategoryAndHost_Username(name, category, hostId);
+            return accommodationRepository.findAllByNameContainingIgnoreCaseAndCategoryAndHostProfile_Id(name, category, hostProfileId);
         } else if (hasName && hasCategory) {
             return accommodationRepository.findAllByNameContainingIgnoreCaseAndCategory(name, category);
         } else if (hasName && hasHost) {
-            return accommodationRepository.findAllByNameContainingIgnoreCaseAndHost_Username(name, hostId);
+            return accommodationRepository.findAllByNameContainingIgnoreCaseAndHostProfile_Id(name, hostProfileId);
         } else if (hasCategory && hasHost) {
-            return accommodationRepository.findAllByCategoryAndHost_Username(category, hostId);
+            return accommodationRepository.findAllByCategoryAndHostProfile_Id(category, hostProfileId);
         } else if (hasName) {
             return accommodationRepository.findAllByNameContainingIgnoreCase(name);
         } else if (hasCategory) {
             return accommodationRepository.findAllByCategory(category);
         } else if (hasHost) {
-            return accommodationRepository.findAllByHost_Username(hostId);
+            return accommodationRepository.findAllByHostProfile_Id(hostProfileId);
         }
         return findAll();
-    }
-
-    @Override
-    public Double getAverageRating(Long id) {
-        return this.reviewRepository.findAllByAccommodationId(id).stream().flatMapToInt(review ->
-                IntStream.of(review.getRating())).average().orElse(0.0);
     }
 }

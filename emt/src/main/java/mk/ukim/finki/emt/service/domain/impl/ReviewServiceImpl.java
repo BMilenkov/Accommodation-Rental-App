@@ -1,6 +1,5 @@
 package mk.ukim.finki.emt.service.domain.impl;
 
-
 import mk.ukim.finki.emt.model.domain.Review;
 import mk.ukim.finki.emt.repository.ReviewRepository;
 import mk.ukim.finki.emt.service.domain.AccommodationService;
@@ -9,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 @Service
 public class ReviewServiceImpl implements ReviewService {
@@ -55,5 +55,11 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public void deleteById(Long id) {
         this.reviewRepository.deleteById(id);
+    }
+
+    @Override
+    public Double getAverageRatingForAccommodation(Long id) {
+        return this.reviewRepository.findAllByAccommodationId(id).stream().flatMapToInt(review ->
+                IntStream.of(review.getRating())).average().orElse(0.0);
     }
 }

@@ -42,33 +42,31 @@ public class WebSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .headers((headers) -> headers
-                .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
+                        .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
                 )
                 .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(
                         corsConfigurationSource()))
                 .authorizeHttpRequests(requests -> requests.requestMatchers(
                         "/api/accommodations",
                         "/api/countries",
-                        "/api/hosts",
-                        "/api/hosts/login",
-                        "/api/hosts/add",
-                        "api/reviews/**",
+                        "/api/hostProfiles",
+                        "api/user/login",
+                        "api/user/register",
                         "/h2"
-                ).permitAll().requestMatchers("/api/hosts/**").hasRole("ADMIN").anyRequest().hasRole("ADMIN"))
+                ).permitAll().anyRequest().hasRole("HOST"))
                 .formLogin((form) -> form.loginProcessingUrl(
-                                "/api/hosts/login")
+                                "/api/user/login")
                         .permitAll()
-                        .failureUrl("/api/hosts/login?error=BadCredentials")
+                        .failureUrl("/api/user/login?error=BadCredentials")
                         .defaultSuccessUrl(
                                 "/swagger-ui/index.html",
                                 true
                         ))
-                .logout((logout) -> logout.logoutUrl("/api/hosts/logout")
+                .logout((logout) -> logout.logoutUrl("/api/user/logout")
                         .clearAuthentication(true)
-                        .invalidateHttpSession(
-                                true)
+                        .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
-                        .logoutSuccessUrl("/api/hosts/login"))
+                        .logoutSuccessUrl("/api/user/login"))
                 .exceptionHandling((ex) -> ex.accessDeniedPage(
                         "/access_denied"));
         return http.build();

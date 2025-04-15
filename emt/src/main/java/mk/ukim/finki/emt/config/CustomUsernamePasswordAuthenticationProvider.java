@@ -1,6 +1,6 @@
 package mk.ukim.finki.emt.config;
 
-import mk.ukim.finki.emt.service.domain.HostService;
+import mk.ukim.finki.emt.service.domain.UserService;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -12,14 +12,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class CustomUsernamePasswordAuthenticationProvider implements AuthenticationProvider {
 
-    private final HostService hostService;
+    private final UserService userService;
     private final PasswordEncoder passwordEncoder;
 
     public CustomUsernamePasswordAuthenticationProvider(
-            HostService hostService,
+            UserService userService,
             PasswordEncoder passwordEncoder
     ) {
-        this.hostService = hostService;
+        this.userService = userService;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -31,7 +31,7 @@ public class CustomUsernamePasswordAuthenticationProvider implements Authenticat
         if ("".equals(username) || "".equals(password)) {
             throw new BadCredentialsException("Invalid Credentials");
         }
-        UserDetails userDetails = hostService.loadUserByUsername(username);
+        UserDetails userDetails = userService.loadUserByUsername(username);
 
         if (!passwordEncoder.matches(password, userDetails.getPassword())) {
             throw new BadCredentialsException("Password is incorrect!");
@@ -48,3 +48,5 @@ public class CustomUsernamePasswordAuthenticationProvider implements Authenticat
         return aClass.equals(UsernamePasswordAuthenticationToken.class);
     }
 }
+
+

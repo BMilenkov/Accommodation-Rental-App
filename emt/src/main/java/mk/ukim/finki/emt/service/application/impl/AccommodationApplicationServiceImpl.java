@@ -3,10 +3,10 @@ package mk.ukim.finki.emt.service.application.impl;
 import mk.ukim.finki.emt.dto.requestDto.RequestAccommodationDto;
 import mk.ukim.finki.emt.dto.requestDto.SearchRequestAccommodationDto;
 import mk.ukim.finki.emt.dto.responseDto.ResponseAccommodationDto;
-import mk.ukim.finki.emt.model.domain.Host;
+import mk.ukim.finki.emt.model.domain.HostProfile;
 import mk.ukim.finki.emt.service.application.AccommodationApplicationService;
 import mk.ukim.finki.emt.service.domain.AccommodationService;
-import mk.ukim.finki.emt.service.domain.HostService;
+import mk.ukim.finki.emt.service.domain.HostProfileService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,11 +16,11 @@ import java.util.Optional;
 public class AccommodationApplicationServiceImpl implements AccommodationApplicationService {
 
     private final AccommodationService accommodationService;
-    private final HostService hostService;
+    private final HostProfileService hostProfileService;
 
-    public AccommodationApplicationServiceImpl(AccommodationService accommodationService, HostService hostService) {
+    public AccommodationApplicationServiceImpl(AccommodationService accommodationService, HostProfileService hostProfileService) {
         this.accommodationService = accommodationService;
-        this.hostService = hostService;
+        this.hostProfileService = hostProfileService;
     }
 
     @Override
@@ -35,15 +35,15 @@ public class AccommodationApplicationServiceImpl implements AccommodationApplica
 
     @Override
     public Optional<ResponseAccommodationDto> save(RequestAccommodationDto accommodation) {
-        Optional<Host> host = this.hostService.findByUsername(accommodation.host());
-        return host.flatMap(value -> this.accommodationService.save(accommodation.toAccommodation(value))
+        Optional<HostProfile> hostProfile = this.hostProfileService.findById(accommodation.hostProfile());
+        return hostProfile.flatMap(value -> this.accommodationService.save(accommodation.toAccommodation(value))
                 .map(ResponseAccommodationDto::from));
     }
 
     @Override
     public Optional<ResponseAccommodationDto> update(Long id, RequestAccommodationDto accommodation) {
-        Optional<Host> host = this.hostService.findByUsername(accommodation.host());
-        return host.flatMap(value -> this.accommodationService.update(id, accommodation.toAccommodation(value))
+        Optional<HostProfile> hostProfile = this.hostProfileService.findById(accommodation.hostProfile());
+        return hostProfile.flatMap(value -> this.accommodationService.update(id, accommodation.toAccommodation(value))
                 .map(ResponseAccommodationDto::from));
     }
 
@@ -62,7 +62,9 @@ public class AccommodationApplicationServiceImpl implements AccommodationApplica
         return ResponseAccommodationDto.from(this.accommodationService.findByFilters(
                 requestAccommodationDto.name(),
                 requestAccommodationDto.category(),
-                requestAccommodationDto.host()
+                requestAccommodationDto.hostProfile()
         ));
     }
+
+
 }

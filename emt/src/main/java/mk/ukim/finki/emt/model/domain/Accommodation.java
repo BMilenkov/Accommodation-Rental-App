@@ -1,9 +1,15 @@
 package mk.ukim.finki.emt.model.domain;
 
 import jakarta.persistence.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import mk.ukim.finki.emt.listeners.AccommodationEventListener;
 import mk.ukim.finki.emt.model.enumerations.Category;
 
 @Entity
+@Data
+@NoArgsConstructor
+@EntityListeners(AccommodationEventListener.class)
 public class Accommodation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,51 +21,17 @@ public class Accommodation {
     private Category category;
 
     @ManyToOne
-    private Host host;
+    private HostProfile hostProfile;
 
     private Integer numRooms;
 
-    public Accommodation(String name, Category category, Host host, Integer numRooms) {
+    private Boolean isRented;
+
+    public Accommodation(String name, Category category, HostProfile hostProfile, Integer numRooms) {
         this.name = name;
         this.category = category;
-        this.host = host;
+        this.hostProfile = hostProfile;
         this.numRooms = numRooms;
-    }
-
-    public Accommodation() {
-    }
-
-    public Long getId() {return id;}
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Category getCategory() {
-        return category;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
-    }
-
-    public Host getHost() {
-        return host;
-    }
-
-    public void setHost(Host host) {
-        this.host = host;
-    }
-
-    public Integer getNumRooms() {
-        return numRooms;
-    }
-
-    public void setNumRooms(Integer numRooms) {
-        this.numRooms = numRooms;
+        this.isRented = false;
     }
 }

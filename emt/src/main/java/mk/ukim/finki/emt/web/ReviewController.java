@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
 @RestController
 @RequestMapping("/api/reviews")
 @Tag(name = "Review API", description = "Endpoints for managing reviews")
@@ -22,15 +21,13 @@ public class ReviewController {
         this.reviewApplicationService = reviewApplicationService;
     }
 
-
     @Operation(summary = "Get all reviews", description = "Retrieves a list of all available reviews.")
     @GetMapping
     public List<ResponseReviewDto> findAll() {
         return reviewApplicationService.findAll();
     }
 
-
-    @Operation(summary = "Get review by ID", description = "Finds an review by its ID.")
+    @Operation(summary = "Get review by ID", description = "Finds a review by its ID.")
     @GetMapping("/{id}")
     public ResponseEntity<ResponseReviewDto> findById(@PathVariable Long id) {
         return this.reviewApplicationService
@@ -46,7 +43,7 @@ public class ReviewController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @Operation(summary = "Update an existing review", description = "Updates an review by ID.")
+    @Operation(summary = "Update an existing review", description = "Updates a review by ID.")
     @PutMapping("/edit/{id}")
     public ResponseEntity<ResponseReviewDto> update(@PathVariable Long id, @RequestBody RequestReviewDto review) {
         return this.reviewApplicationService.update(id, review)
@@ -54,7 +51,7 @@ public class ReviewController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @Operation(summary = "Delete an review", description = "Deletes an review by its ID.")
+    @Operation(summary = "Delete a review", description = "Deletes a review by its ID.")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         if (this.reviewApplicationService.findById(id).isPresent()) {

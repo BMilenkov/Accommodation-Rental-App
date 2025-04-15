@@ -33,7 +33,7 @@ public class AccommodationController {
         if (searchRequestAccommodationDto.category() != null && !searchRequestAccommodationDto.category().name().isEmpty()) {
             hasFilters = true;
         }
-        if (searchRequestAccommodationDto.host() != null && !searchRequestAccommodationDto.host().isEmpty()) {
+        if (searchRequestAccommodationDto.hostProfile() != null) {
             hasFilters = true;
         }
 
@@ -42,7 +42,6 @@ public class AccommodationController {
         }
         return this.accommodationService.findAll();
     }
-
 
     @Operation(summary = "Get accommodation by ID", description = "Finds an accommodation by its ID.")
     @GetMapping("/{id}")

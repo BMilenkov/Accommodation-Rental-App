@@ -10,21 +10,20 @@ import java.util.List;
 @Repository
 public interface AccommodationRepository extends JpaRepository<Accommodation, Long> {
 
-    List<Accommodation> findAllByNameContainingIgnoreCaseAndCategoryAndHost_Username(
-            String name, Category category, String host_username);
+    List<Accommodation> findAllByNameContainingIgnoreCaseAndCategoryAndHostProfile_Id(
+            String name, Category category, Long id);
 
     List<Accommodation> findAllByNameContainingIgnoreCaseAndCategory(
             String name, Category category);
 
-    List<Accommodation> findAllByNameContainingIgnoreCaseAndHost_Username(
-            String name, String host_username);
+    List<Accommodation> findAllByNameContainingIgnoreCaseAndHostProfile_Id(
+            String name, Long id);
 
-    List<Accommodation> findAllByCategoryAndHost_Username(
-            Category category, String host_username);
+    List<Accommodation> findAllByCategoryAndHostProfile_Id(Category category, Long id);
 
     List<Accommodation> findAllByNameContainingIgnoreCase(String name);
 
     List<Accommodation> findAllByCategory(Category category);
 
-    List<Accommodation> findAllByHost_Username(String host_username);
+    List<Accommodation> findAllByHostProfile_Id(Long id);
 }

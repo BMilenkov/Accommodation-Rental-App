@@ -15,4 +15,6 @@ public interface ReviewService {
     Optional<Review> update(Long id, Review review);
 
     void deleteById(Long id);
+
+    Double getAverageRatingForAccommodation(Long accommodationId);
 }

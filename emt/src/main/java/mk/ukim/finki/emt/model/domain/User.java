@@ -2,23 +2,31 @@ package mk.ukim.finki.emt.model.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import mk.ukim.finki.emt.model.enumerations.Role;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
+@Data
 @Entity
-public class Host implements UserDetails {
+@Table(name = "app_users")
+@NoArgsConstructor
+public class User implements UserDetails {
+
     @Id
     private String username;
+
     @JsonIgnore
     private String password;
+
     private String name;
+
     private String surname;
-    @ManyToOne
-    private Country country;
 
     private boolean isAccountNonExpired = true;
     private boolean isAccountNonLocked = true;
@@ -28,71 +36,30 @@ public class Host implements UserDetails {
     @Enumerated(value = EnumType.STRING)
     private Role role;
 
-    public Host() {
-    }
+    //     default:
+//     to-one -> FetchType.EAGER
+//     to-many -> FetchType.LAZY
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<ReservationCart> carts;
 
-    public Host(String username, String password, String name, String surname, Country country) {
+    public User(String username, String password, String name, String surname, Role role) {
         this.username = username;
         this.password = password;
         this.name = name;
         this.surname = surname;
-        this.country = country;
-        this.role = Role.ROLE_USER;
-    }
-
-    public Host(String username, String password, String name, String surname, Country country, Role role) {
-        this.username = username;
-        this.password = password;
-        this.name = name;
-        this.surname = surname;
-        this.country = country;
         this.role = role;
     }
 
-    public Host(String username, String name, String surname, Country country, Role role) {
+    public User(String username, String name, String surname, Role role) {
         this.username = username;
         this.name = name;
         this.surname = surname;
-        this.country = country;
         this.role = role;
     }
 
-    @Override
-    public String getUsername() {
-        return username;
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
-
-    public Country getCountry() {
-        return country;
-    }
-
-    public void setCountry(Country country) {
-        this.country = country;
-    }
-
-    public Role getRole() {
-        return role;
+    public User(UserDetails userDetails) {
+        this.username = userDetails.getUsername();
+        this.password = userDetails.getPassword();
     }
 
     @Override

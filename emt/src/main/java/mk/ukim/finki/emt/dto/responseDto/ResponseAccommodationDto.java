@@ -1,7 +1,6 @@
 package mk.ukim.finki.emt.dto.responseDto;
 
 import mk.ukim.finki.emt.model.domain.Accommodation;
-import mk.ukim.finki.emt.model.domain.Host;
 import mk.ukim.finki.emt.model.enumerations.Category;
 
 import java.util.List;
@@ -11,7 +10,7 @@ public record ResponseAccommodationDto(
         Long id,
         String name,
         Category category,
-        String host,
+        Long hostProfile,
         Integer numRooms
 ) {
     public static ResponseAccommodationDto from(Accommodation accommodation) {
@@ -19,13 +18,9 @@ public record ResponseAccommodationDto(
                 accommodation.getId(),
                 accommodation.getName(),
                 accommodation.getCategory(),
-                accommodation.getHost().getUsername(),
+                accommodation.getHostProfile().getId(),
                 accommodation.getNumRooms()
         );
-    }
-
-    public Accommodation toAccommodation(Host host) {
-        return new Accommodation(name, category, host, numRooms);
     }
 
     public static List<ResponseAccommodationDto> from(List<Accommodation> accommodations) {

@@ -20,6 +20,5 @@ public interface AccommodationService {
 
     Optional<Accommodation> markAsRented(Long id);
 
-    List<Accommodation> findByFilters(String name, Category category, String hostId);
-    Double getAverageRating(Long id);
+    List<Accommodation> findByFilters(String name, Category category, Long hostProfileId);
 }

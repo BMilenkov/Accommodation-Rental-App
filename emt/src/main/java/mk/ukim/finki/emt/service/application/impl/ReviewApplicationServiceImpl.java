@@ -52,6 +52,6 @@ public class ReviewApplicationServiceImpl implements ReviewApplicationService {
 
     @Override
     public Double findAverageRating(Long accommodationId) {
-        return this.accommodationService.getAverageRating(accommodationId);
+        return this.reviewService.getAverageRatingForAccommodation(accommodationId);
     }
 }

@@ -1,17 +1,10 @@
 package mk.ukim.finki.emt.bootstrap;
 
 import jakarta.annotation.PostConstruct;
-import mk.ukim.finki.emt.model.domain.Accommodation;
-import mk.ukim.finki.emt.model.domain.Country;
-import mk.ukim.finki.emt.model.domain.Host;
-import mk.ukim.finki.emt.model.domain.Review;
+import mk.ukim.finki.emt.model.domain.*;
 import mk.ukim.finki.emt.model.enumerations.Category;
 import mk.ukim.finki.emt.model.enumerations.Role;
-import mk.ukim.finki.emt.repository.AccommodationRepository;
-import mk.ukim.finki.emt.repository.CountryRepository;
-import mk.ukim.finki.emt.repository.HostRepository;
-import mk.ukim.finki.emt.repository.ReviewRepository;
-import mk.ukim.finki.emt.service.domain.ReviewService;
+import mk.ukim.finki.emt.repository.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -22,22 +15,25 @@ import java.util.List;
 public class DataInitializer {
     //Lists
     public static List<Country> countries = null;
-    public static List<Host> hosts = null;
+    public static List<HostProfile> hostProfiles = null;
+    public static List<User> users = null;
     public static List<Accommodation> accommodations = null;
     public static List<Review> reviews = null;
 
     //Repositories
     private final CountryRepository countryRepository;
-    private final HostRepository hostRepository;
+    private final HostProfileRepository hostProfileRepository;
+    private final UserRepository userRepository;
     private final AccommodationRepository accommodationRepository;
     private final ReviewRepository reviewRepository;
 
     //PasswordEncoder
     private final PasswordEncoder passwordEncoder;
 
-    public DataInitializer(CountryRepository countryRepository, HostRepository hostRepository, AccommodationRepository accommodationRepository, ReviewRepository reviewRepository, PasswordEncoder passwordEncoder) {
+    public DataInitializer(CountryRepository countryRepository, HostProfileRepository hostProfileRepository, UserRepository userRepository, AccommodationRepository accommodationRepository, ReviewRepository reviewRepository, PasswordEncoder passwordEncoder) {
         this.countryRepository = countryRepository;
-        this.hostRepository = hostRepository;
+        this.hostProfileRepository = hostProfileRepository;
+        this.userRepository = userRepository;
         this.accommodationRepository = accommodationRepository;
         this.reviewRepository = reviewRepository;
         this.passwordEncoder = passwordEncoder;
@@ -55,29 +51,42 @@ public class DataInitializer {
             countries.add(new Country("Brazil", "South America"));
             this.countryRepository.saveAll(countries);
         }
-        //Hosts
-        hosts = new ArrayList<>();
-        if (this.hostRepository.count() == 0) {
-            hosts.add(new Host("branko.milenkov", passwordEncoder.encode("bm"),
-                    "Branko", "Milenkov", countries.get(0), Role.ROLE_ADMIN));  // USA
-            hosts.add(new Host("vase.lazarev", passwordEncoder.encode("vl"),
-                    "Vase", "Lazarev", countries.get(1), Role.ROLE_USER));  // Germany
-            hosts.add(new Host("hristijan.stoimilov", passwordEncoder.encode("hs"),
-                    "Hristijan", "Stoimilov", countries.get(2), Role.ROLE_USER));  // France
-            hosts.add(new Host("nikola.serafimov", passwordEncoder.encode("ns"),
-                    "Nikola", "Serafimov", countries.get(3), Role.ROLE_USER));  // Japan
-            hosts.add(new Host("martin.rozin.sopkov", passwordEncoder.encode("mrs"),
-                    "Martin", "Rozin Sopkov", countries.get(4), Role.ROLE_USER)); // Brazil
-            this.hostRepository.saveAll(hosts);
+
+        //Users
+        users = new ArrayList<>();
+        if (this.userRepository.count() == 0) {
+            users.add(new User("branko.milenkov", passwordEncoder.encode("bm"),
+                    "Branko", "Milenkov", Role.ROLE_HOST));
+            users.add(new User("vase.lazarev", passwordEncoder.encode("vl"),
+                    "Vase", "Lazarev", Role.ROLE_HOST));  // Germany
+            users.add(new User("hristijan.stoimilov", passwordEncoder.encode("hs"),
+                    "Hristijan", "Stoimilov", Role.ROLE_HOST));  // France
+            users.add(new User("nikola.serafimov", passwordEncoder.encode("ns"),
+                    "Nikola", "Serafimov", Role.ROLE_USER));  // Japan
+            users.add(new User("martin.rozin.sopkov", passwordEncoder.encode("mrs"),
+                    "Martin", "Rozin Sopkov", Role.ROLE_USER)); // Brazil
+            this.userRepository.saveAll(users);
         }
+
+        //HostProfiles
+        hostProfiles = new ArrayList<>();
+        if (this.hostProfileRepository.count() == 0) {
+            hostProfiles.add(new HostProfile(countries.get(0), users.get(0)));  // USA
+            hostProfiles.add(new HostProfile(countries.get(1), users.get(1)));  // Germany
+            hostProfiles.add(new HostProfile(countries.get(2), users.get(2)));  // France
+//            hostProfiles.add(new HostProfile(countries.get(3), users.get(0)));  // Japan
+//            hostProfiles.add(new HostProfile(countries.get(4), users.get(0))); // Brazil
+            this.hostProfileRepository.saveAll(hostProfiles);
+        }
+
         //Accommodations
         accommodations = new ArrayList<>();
         if (this.accommodationRepository.count() == 0) {
-            accommodations.add(new Accommodation("Luxury Resort", Category.HOTEL, hosts.get(0), 100));
-            accommodations.add(new Accommodation("Cozy Apartment", Category.APARTMENT, hosts.get(1), 3));
-            accommodations.add(new Accommodation("Budget Hostel", Category.MOTEL, hosts.get(2), 20));
-            accommodations.add(new Accommodation("Traditional Ryokan", Category.HOUSE, hosts.get(3), 15));
-            accommodations.add(new Accommodation("Beach Bungalow", Category.FLAT, hosts.get(4), 5));
+            accommodations.add(new Accommodation("Luxury Resort", Category.HOTEL, hostProfiles.get(0), 100));
+            accommodations.add(new Accommodation("Cozy Apartment", Category.APARTMENT, hostProfiles.get(1), 3));
+            accommodations.add(new Accommodation("Budget Hostel", Category.MOTEL, hostProfiles.get(2), 20));
+            accommodations.add(new Accommodation("Traditional Ryoko", Category.HOUSE, hostProfiles.get(0), 15));
+            accommodations.add(new Accommodation("Beach Bungalow", Category.FLAT, hostProfiles.get(1), 5));
             this.accommodationRepository.saveAll(accommodations);
         }
 

@@ -1,14 +1,14 @@
 package mk.ukim.finki.emt.service.domain;
 
 import mk.ukim.finki.emt.model.domain.Accommodation;
-import mk.ukim.finki.emt.model.enumerations.Category;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface AccommodationService {
 
-    List<Accommodation> findAll();
+    List<Accommodation> findAll(Specification<Accommodation> filter);
 
     Optional<Accommodation> findById(Long id);
 
@@ -19,6 +19,4 @@ public interface AccommodationService {
     void deleteById(Long id);
 
     Optional<Accommodation> markAsRented(Long id);
-
-    List<Accommodation> findByFilters(String name, Category category, Long hostProfileId);
 }

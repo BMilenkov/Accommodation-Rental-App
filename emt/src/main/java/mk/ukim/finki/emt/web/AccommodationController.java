@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import mk.ukim.finki.emt.dto.requestDto.RequestAccommodationDto;
 import mk.ukim.finki.emt.dto.requestDto.SearchRequestAccommodationDto;
 import mk.ukim.finki.emt.dto.responseDto.ResponseAccommodationDto;
+import mk.ukim.finki.emt.model.enumerations.Category;
 import mk.ukim.finki.emt.service.application.AccommodationApplicationService;
 import mk.ukim.finki.emt.service.application.ReviewApplicationService;
 import org.springframework.http.ResponseEntity;
@@ -27,20 +28,15 @@ public class AccommodationController {
 
     @Operation(summary = "Get all accommodations", description = "Retrieves a list of all available accommodations.")
     @GetMapping
-    public List<ResponseAccommodationDto> findAll(@ModelAttribute SearchRequestAccommodationDto searchRequestAccommodationDto) {
-        boolean hasFilters = searchRequestAccommodationDto.name() != null && !searchRequestAccommodationDto.name().isEmpty();
+    public List<ResponseAccommodationDto> findAll(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) Category category,
+            @RequestParam(required = false) Long hostProfile,
+            @RequestParam(required = false) Integer numRooms,
+            @RequestParam(required = false) Boolean isRented) {
 
-        if (searchRequestAccommodationDto.category() != null && !searchRequestAccommodationDto.category().name().isEmpty()) {
-            hasFilters = true;
-        }
-        if (searchRequestAccommodationDto.hostProfile() != null) {
-            hasFilters = true;
-        }
-
-        if (hasFilters) {
-            return this.accommodationService.findByFilters(searchRequestAccommodationDto);
-        }
-        return this.accommodationService.findAll();
+        SearchRequestAccommodationDto request = new SearchRequestAccommodationDto(name, category, hostProfile, numRooms, isRented);
+        return this.accommodationService.findAll(request);
     }
 
     @Operation(summary = "Get accommodation by ID", description = "Finds an accommodation by its ID.")

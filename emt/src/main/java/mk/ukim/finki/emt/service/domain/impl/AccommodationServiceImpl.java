@@ -9,6 +9,7 @@ import mk.ukim.finki.emt.repository.AccommodationRepository;
 import mk.ukim.finki.emt.service.domain.AccommodationService;
 import mk.ukim.finki.emt.service.domain.HostProfileService;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,8 +29,8 @@ public class AccommodationServiceImpl implements AccommodationService {
     }
 
     @Override
-    public List<Accommodation> findAll() {
-        return this.accommodationRepository.findAll();
+    public List<Accommodation> findAll(Specification<Accommodation> filter) {
+        return this.accommodationRepository.findAll(filter);
     }
 
     @Override
@@ -88,30 +89,5 @@ public class AccommodationServiceImpl implements AccommodationService {
             accommodation.setIsRented(true);
             return accommodationRepository.save(accommodation);
         });
-    }
-
-    @Override
-    public List<Accommodation> findByFilters(String name, Category category, Long hostProfileId) {
-
-        boolean hasName = name != null && !name.isEmpty();
-        boolean hasCategory = category != null;
-        boolean hasHost = hostProfileId != null;
-
-        if (hasName && hasCategory && hasHost) {
-            return accommodationRepository.findAllByNameContainingIgnoreCaseAndCategoryAndHostProfile_Id(name, category, hostProfileId);
-        } else if (hasName && hasCategory) {
-            return accommodationRepository.findAllByNameContainingIgnoreCaseAndCategory(name, category);
-        } else if (hasName && hasHost) {
-            return accommodationRepository.findAllByNameContainingIgnoreCaseAndHostProfile_Id(name, hostProfileId);
-        } else if (hasCategory && hasHost) {
-            return accommodationRepository.findAllByCategoryAndHostProfile_Id(category, hostProfileId);
-        } else if (hasName) {
-            return accommodationRepository.findAllByNameContainingIgnoreCase(name);
-        } else if (hasCategory) {
-            return accommodationRepository.findAllByCategory(category);
-        } else if (hasHost) {
-            return accommodationRepository.findAllByHostProfile_Id(hostProfileId);
-        }
-        return findAll();
     }
 }

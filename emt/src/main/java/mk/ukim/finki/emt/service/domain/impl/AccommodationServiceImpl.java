@@ -3,9 +3,10 @@ package mk.ukim.finki.emt.service.domain.impl;
 import mk.ukim.finki.emt.events.AccommodationEvent;
 import mk.ukim.finki.emt.model.domain.Accommodation;
 import mk.ukim.finki.emt.model.enumerations.AccommodationChangeType;
-import mk.ukim.finki.emt.model.enumerations.Category;
 import mk.ukim.finki.emt.model.exceptions.AccommodationNotFoundException;
+import mk.ukim.finki.emt.model.views.AccommodationsByHostView;
 import mk.ukim.finki.emt.repository.AccommodationRepository;
+import mk.ukim.finki.emt.repository.AccommodationsByHostViewRepository;
 import mk.ukim.finki.emt.service.domain.AccommodationService;
 import mk.ukim.finki.emt.service.domain.HostProfileService;
 import org.springframework.context.ApplicationEventPublisher;
@@ -19,11 +20,13 @@ import java.util.Optional;
 public class AccommodationServiceImpl implements AccommodationService {
 
     private final AccommodationRepository accommodationRepository;
+    private final AccommodationsByHostViewRepository accommodationsByHostViewRepository;
     private final HostProfileService hostProfileService;
     private final ApplicationEventPublisher applicationEventPublisher;
 
-    public AccommodationServiceImpl(AccommodationRepository accommodationRepository, HostProfileService hostProfileService, ApplicationEventPublisher applicationEventPublisher) {
+    public AccommodationServiceImpl(AccommodationRepository accommodationRepository, AccommodationsByHostViewRepository accommodationsByHostViewRepository, HostProfileService hostProfileService, ApplicationEventPublisher applicationEventPublisher) {
         this.accommodationRepository = accommodationRepository;
+        this.accommodationsByHostViewRepository = accommodationsByHostViewRepository;
         this.hostProfileService = hostProfileService;
         this.applicationEventPublisher = applicationEventPublisher;
     }
@@ -89,5 +92,15 @@ public class AccommodationServiceImpl implements AccommodationService {
             accommodation.setIsRented(true);
             return accommodationRepository.save(accommodation);
         });
+    }
+
+    @Override
+    public List<AccommodationsByHostView> findAllAccommodationsByHostStatistics() {
+        return this.accommodationsByHostViewRepository.findAll();
+    }
+
+    @Override
+    public void refreshMaterializedView() {
+        this.accommodationsByHostViewRepository.refreshMaterializedView();
     }
 }

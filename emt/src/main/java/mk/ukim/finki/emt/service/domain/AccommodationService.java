@@ -1,6 +1,7 @@
 package mk.ukim.finki.emt.service.domain;
 
 import mk.ukim.finki.emt.model.domain.Accommodation;
+import mk.ukim.finki.emt.model.views.AccommodationsByHostView;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
@@ -19,4 +20,8 @@ public interface AccommodationService {
     void deleteById(Long id);
 
     Optional<Accommodation> markAsRented(Long id);
+
+    void refreshMaterializedView();
+
+    List<AccommodationsByHostView> findAllAccommodationsByHostStatistics();
 }

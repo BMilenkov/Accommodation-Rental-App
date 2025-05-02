@@ -2,8 +2,8 @@ package mk.ukim.finki.emt.service.application;
 
 import mk.ukim.finki.emt.dto.requestDto.RequestAccommodationDto;
 import mk.ukim.finki.emt.dto.requestDto.SearchRequestAccommodationDto;
+import mk.ukim.finki.emt.dto.responseDto.ResponseAccommodationByHostViewDto;
 import mk.ukim.finki.emt.dto.responseDto.ResponseAccommodationDto;
-import mk.ukim.finki.emt.model.enumerations.Category;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,5 +21,7 @@ public interface AccommodationApplicationService {
     void deleteById(Long id);
 
     Optional<ResponseAccommodationDto> markAsRented(Long id);
+
+    List<ResponseAccommodationByHostViewDto> findAllAccommodationsByHostStatistics();
 
 }

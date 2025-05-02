@@ -2,8 +2,10 @@ package mk.ukim.finki.emt.service.application.impl;
 
 import mk.ukim.finki.emt.dto.requestDto.RequestHostProfileDto;
 import mk.ukim.finki.emt.dto.responseDto.ResponseHostProfileDto;
+import mk.ukim.finki.emt.dto.responseDto.ResponseHostsPerCountryViewDto;
 import mk.ukim.finki.emt.model.domain.Country;
 import mk.ukim.finki.emt.model.domain.User;
+import mk.ukim.finki.emt.model.projections.HostProfileProjection;
 import mk.ukim.finki.emt.service.application.HostProfileApplicationService;
 import mk.ukim.finki.emt.service.domain.CountryService;
 import mk.ukim.finki.emt.service.domain.HostProfileService;
@@ -53,5 +55,15 @@ public class HostProfileApplicationServiceImpl implements HostProfileApplication
     @Override
     public void deleteById(Long id) {
         this.hostProfileService.deleteById(id);
+    }
+
+    @Override
+    public List<ResponseHostsPerCountryViewDto> findAllHostsPerCountryStatistics() {
+        return ResponseHostsPerCountryViewDto.from(this.hostProfileService.findAllHostsPerCountryStatistics());
+    }
+
+    @Override
+    public List<HostProfileProjection> getAllHostNames() {
+        return this.hostProfileService.getAllHostNames();
     }
 }

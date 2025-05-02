@@ -2,6 +2,7 @@ package mk.ukim.finki.emt.service.application.impl;
 
 import mk.ukim.finki.emt.dto.requestDto.RequestAccommodationDto;
 import mk.ukim.finki.emt.dto.requestDto.SearchRequestAccommodationDto;
+import mk.ukim.finki.emt.dto.responseDto.ResponseAccommodationByHostViewDto;
 import mk.ukim.finki.emt.dto.responseDto.ResponseAccommodationDto;
 import mk.ukim.finki.emt.model.domain.Accommodation;
 import mk.ukim.finki.emt.model.domain.HostProfile;
@@ -80,5 +81,10 @@ public class AccommodationApplicationServiceImpl implements AccommodationApplica
     @Override
     public Optional<ResponseAccommodationDto> markAsRented(Long id) {
         return this.accommodationService.markAsRented(id).map(ResponseAccommodationDto::from);
+    }
+
+    @Override
+    public List<ResponseAccommodationByHostViewDto> findAllAccommodationsByHostStatistics() {
+        return ResponseAccommodationByHostViewDto.from(this.accommodationService.findAllAccommodationsByHostStatistics());
     }
 }

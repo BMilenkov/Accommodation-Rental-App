@@ -4,6 +4,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import mk.ukim.finki.emt.dto.responseDto.ResponseHostProfileDto;
 import mk.ukim.finki.emt.dto.requestDto.RequestHostProfileDto;
+import mk.ukim.finki.emt.dto.responseDto.ResponseHostsPerCountryViewDto;
+import mk.ukim.finki.emt.model.projections.HostProfileProjection;
 import mk.ukim.finki.emt.service.application.HostProfileApplicationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -60,5 +62,17 @@ public class HostProfileController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @Operation(summary = "Number of hosts", description = "Get number of hosts per Country.")
+    @GetMapping("/by-country")
+    public List<ResponseHostsPerCountryViewDto> getHostsByCountryStatistics() {
+        return this.hostService.findAllHostsPerCountryStatistics();
+    }
+
+    @Operation(summary = "Host's name and surname", description = "Get all hosts with name and surname.")
+    @GetMapping("/names")
+    public List<HostProfileProjection> getHostNames() {
+        return this.hostService.getAllHostNames();
     }
 }

@@ -1,8 +1,6 @@
 package mk.ukim.finki.emt.repository;
 
 import mk.ukim.finki.emt.model.domain.User;
-import mk.ukim.finki.emt.model.enumerations.Role;
-import mk.ukim.finki.emt.model.projections.UserProjection;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -18,7 +16,13 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     Optional<User> findByUsername(String username);
 
+    // Does not change the Lazy FetchType in the User class for carts
+    @EntityGraph(attributePaths = {})
+    @Query("SELECT u FROM User u")
+    List<User> findAllWithoutCarts();
+
     // Change the Lazy FetchType in the User class for carts
+    // 1 query for user joining carts.
     @EntityGraph(
             type = EntityGraph.EntityGraphType.FETCH,
             attributePaths = {"carts"}
@@ -36,9 +40,4 @@ public interface UserRepository extends JpaRepository<User, String> {
     )
     @Query("select u from User u")
     List<User> loadAll();
-
-    UserProjection findByRole(Role role);
-
-    @Query("select u.username, u.name, u.surname from User u")
-    List<UserProjection> takeUsernameAndNameAndSurnameByProjection();
 }

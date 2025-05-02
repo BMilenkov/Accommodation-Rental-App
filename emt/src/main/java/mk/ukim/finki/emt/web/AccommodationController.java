@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import mk.ukim.finki.emt.dto.requestDto.RequestAccommodationDto;
 import mk.ukim.finki.emt.dto.requestDto.SearchRequestAccommodationDto;
+import mk.ukim.finki.emt.dto.responseDto.ResponseAccommodationByHostViewDto;
 import mk.ukim.finki.emt.dto.responseDto.ResponseAccommodationDto;
 import mk.ukim.finki.emt.model.enumerations.Category;
 import mk.ukim.finki.emt.service.application.AccommodationApplicationService;
@@ -85,5 +86,11 @@ public class AccommodationController {
     @GetMapping("/average/{id}")
     public Double getAverageRating(@PathVariable Long id) {
         return this.reviewService.findAverageRating(id);
+    }
+
+    @Operation(summary = "Number of accommodations", description = "Get number of accommodations by Host.")
+    @GetMapping("/by-host")
+    public List<ResponseAccommodationByHostViewDto> getAccommodationsByHostStatistics() {
+        return this.accommodationService.findAllAccommodationsByHostStatistics();
     }
 }

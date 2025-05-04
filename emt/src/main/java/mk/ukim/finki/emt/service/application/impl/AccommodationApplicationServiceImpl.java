@@ -9,6 +9,8 @@ import mk.ukim.finki.emt.model.domain.HostProfile;
 import mk.ukim.finki.emt.service.application.AccommodationApplicationService;
 import mk.ukim.finki.emt.service.domain.AccommodationService;
 import mk.ukim.finki.emt.service.domain.HostProfileService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -28,8 +30,7 @@ public class AccommodationApplicationServiceImpl implements AccommodationApplica
         this.hostProfileService = hostProfileService;
     }
 
-    @Override
-    public List<ResponseAccommodationDto> findAll(SearchRequestAccommodationDto searchRequest) {
+    private Specification<Accommodation> buildAccommodationSpecification(SearchRequestAccommodationDto searchRequest) {
         Specification<Accommodation> specification = Specification.where(null);
 
         if (searchRequest.name() != null && !searchRequest.name().isBlank()) {
@@ -51,7 +52,21 @@ public class AccommodationApplicationServiceImpl implements AccommodationApplica
         if (searchRequest.isRented() != null) {
             specification = specification.and(filterEqualsV(Accommodation.class, "isRented", searchRequest.isRented()));
         }
+
+        return specification;
+    }
+
+    @Override
+    public List<ResponseAccommodationDto> findAll(SearchRequestAccommodationDto searchRequest) {
+        Specification<Accommodation> specification = buildAccommodationSpecification(searchRequest);
         return ResponseAccommodationDto.from(this.accommodationService.findAll(specification));
+    }
+
+    @Override
+    public Page<ResponseAccommodationDto> findAll(SearchRequestAccommodationDto searchRequest, Pageable pageable) {
+        Specification<Accommodation> specification = buildAccommodationSpecification(searchRequest);
+        return this.accommodationService.findAll(specification, pageable)
+                .map(ResponseAccommodationDto::from);
     }
 
     @Override

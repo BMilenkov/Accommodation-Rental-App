@@ -2,6 +2,8 @@ package mk.ukim.finki.emt.service.domain;
 
 import mk.ukim.finki.emt.model.domain.Accommodation;
 import mk.ukim.finki.emt.model.views.AccommodationsByHostView;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
@@ -10,6 +12,8 @@ import java.util.Optional;
 public interface AccommodationService {
 
     List<Accommodation> findAll(Specification<Accommodation> filter);
+
+    Page<Accommodation> findAll(Specification<Accommodation> filter, Pageable pageable);
 
     Optional<Accommodation> findById(Long id);
 

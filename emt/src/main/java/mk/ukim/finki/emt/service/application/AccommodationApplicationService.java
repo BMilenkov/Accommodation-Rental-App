@@ -4,6 +4,8 @@ import mk.ukim.finki.emt.dto.requestDto.RequestAccommodationDto;
 import mk.ukim.finki.emt.dto.requestDto.SearchRequestAccommodationDto;
 import mk.ukim.finki.emt.dto.responseDto.ResponseAccommodationByHostViewDto;
 import mk.ukim.finki.emt.dto.responseDto.ResponseAccommodationDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,6 +13,8 @@ import java.util.Optional;
 public interface AccommodationApplicationService {
 
     List<ResponseAccommodationDto> findAll(SearchRequestAccommodationDto searchRequestDto);
+
+    Page<ResponseAccommodationDto> findAll(SearchRequestAccommodationDto searchRequestDto, Pageable pageable);
 
     Optional<ResponseAccommodationDto> findById(Long id);
 

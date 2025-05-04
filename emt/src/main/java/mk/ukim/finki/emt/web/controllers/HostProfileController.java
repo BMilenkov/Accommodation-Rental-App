@@ -1,4 +1,4 @@
-package mk.ukim.finki.emt.web;
+package mk.ukim.finki.emt.web.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -64,13 +64,13 @@ public class HostProfileController {
         }
     }
 
-    @Operation(summary = "Number of hosts", description = "Get number of hosts per Country.")
+    @Operation(summary = "Number of hosts by Country", description = "Get number of hosts per Country.")
     @GetMapping("/by-country")
     public List<ResponseHostsPerCountryViewDto> getHostsByCountryStatistics() {
         return this.hostService.findAllHostsPerCountryStatistics();
     }
 
-    @Operation(summary = "Host's name and surname", description = "Get all hosts with name and surname.")
+    @Operation(summary = "Get all hosts by name and surname", description = "Get all hosts by name and surname.")
     @GetMapping("/names")
     public List<HostProfileProjection> getHostNames() {
         return this.hostService.getAllHostNames();

@@ -10,6 +10,8 @@ import mk.ukim.finki.emt.repository.AccommodationsByHostViewRepository;
 import mk.ukim.finki.emt.service.domain.AccommodationService;
 import mk.ukim.finki.emt.service.domain.HostProfileService;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +36,11 @@ public class AccommodationServiceImpl implements AccommodationService {
     @Override
     public List<Accommodation> findAll(Specification<Accommodation> filter) {
         return this.accommodationRepository.findAll(filter);
+    }
+
+    @Override
+    public Page<Accommodation> findAll(Specification<Accommodation> filter, Pageable pageable) {
+        return this.accommodationRepository.findAll(filter, pageable);
     }
 
     @Override

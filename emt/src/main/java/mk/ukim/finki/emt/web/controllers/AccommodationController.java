@@ -1,4 +1,4 @@
-package mk.ukim.finki.emt.web;
+package mk.ukim.finki.emt.web.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -7,6 +7,8 @@ import mk.ukim.finki.emt.dto.requestDto.SearchRequestAccommodationDto;
 import mk.ukim.finki.emt.dto.responseDto.ResponseAccommodationByHostViewDto;
 import mk.ukim.finki.emt.dto.responseDto.ResponseAccommodationDto;
 import mk.ukim.finki.emt.model.enumerations.Category;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import mk.ukim.finki.emt.service.application.AccommodationApplicationService;
 import mk.ukim.finki.emt.service.application.ReviewApplicationService;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +40,18 @@ public class AccommodationController {
 
         SearchRequestAccommodationDto request = new SearchRequestAccommodationDto(name, category, hostProfile, numRooms, isRented);
         return this.accommodationService.findAll(request);
+    }
+
+    @Operation(summary = "Get a paginated list of accommodations", description = "Retrieves a page of all available accommodations.")
+    @GetMapping("/paginated")
+    public ResponseEntity<Page<ResponseAccommodationDto>> findAll(@RequestParam(required = false) String name,
+                                                                  @RequestParam(required = false) Category category,
+                                                                  @RequestParam(required = false) Long hostProfile,
+                                                                  @RequestParam(required = false) Integer numRooms,
+                                                                  @RequestParam(required = false) Boolean isRented,
+                                                                  Pageable pageable) {
+        SearchRequestAccommodationDto request = new SearchRequestAccommodationDto(name, category, hostProfile, numRooms, isRented);
+        return ResponseEntity.ok(this.accommodationService.findAll(request, pageable));
     }
 
     @Operation(summary = "Get accommodation by ID", description = "Finds an accommodation by its ID.")

@@ -3,8 +3,13 @@ package mk.ukim.finki.emt.web.controllers;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import mk.ukim.finki.emt.dto.requestDto.RequestReviewDto;
+import mk.ukim.finki.emt.dto.requestDto.SearchRequestAccommodationDto;
+import mk.ukim.finki.emt.dto.responseDto.ResponseAccommodationDto;
 import mk.ukim.finki.emt.dto.responseDto.ResponseReviewDto;
+import mk.ukim.finki.emt.model.enumerations.Category;
 import mk.ukim.finki.emt.service.application.ReviewApplicationService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

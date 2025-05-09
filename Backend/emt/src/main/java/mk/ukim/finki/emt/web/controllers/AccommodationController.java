@@ -7,6 +7,7 @@ import mk.ukim.finki.emt.dto.requestDto.SearchRequestAccommodationDto;
 import mk.ukim.finki.emt.dto.responseDto.ResponseAccommodationByHostViewDto;
 import mk.ukim.finki.emt.dto.responseDto.ResponseAccommodationDto;
 import mk.ukim.finki.emt.model.enumerations.Category;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import mk.ukim.finki.emt.service.application.AccommodationApplicationService;
@@ -49,7 +50,7 @@ public class AccommodationController {
                                                                   @RequestParam(required = false) Long hostProfile,
                                                                   @RequestParam(required = false) Integer numRooms,
                                                                   @RequestParam(required = false) Boolean isRented,
-                                                                  Pageable pageable) {
+                                                                  @ParameterObject Pageable pageable) {
         SearchRequestAccommodationDto request = new SearchRequestAccommodationDto(name, category, hostProfile, numRooms, isRented);
         return ResponseEntity.ok(this.accommodationService.findAll(request, pageable));
     }

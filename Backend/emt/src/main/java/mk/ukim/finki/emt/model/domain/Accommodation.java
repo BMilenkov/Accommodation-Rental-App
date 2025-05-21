@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import mk.ukim.finki.emt.listeners.AccommodationEventListener;
 import mk.ukim.finki.emt.model.enumerations.Category;
 
+import java.util.List;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -26,6 +28,9 @@ public class Accommodation {
     private Integer numRooms;
 
     private Boolean isRented;
+
+    @ManyToMany(mappedBy = "accommodations")
+    private List<ReservationCart> reservationCarts;
 
     public Accommodation(String name, Category category, HostProfile hostProfile, Integer numRooms) {
         this.name = name;

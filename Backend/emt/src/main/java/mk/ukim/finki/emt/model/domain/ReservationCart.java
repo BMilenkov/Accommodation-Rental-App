@@ -24,7 +24,12 @@ public class ReservationCart {
     private User user;
 
     @ManyToMany
-    private List<Accommodation> accommodations;
+    @JoinTable(
+            name = "reservation_cart_accommodations",
+            joinColumns = @JoinColumn(name = "reservation_cart_id"),
+            inverseJoinColumns = @JoinColumn(name = "accommodations_id")
+    )
+    private List<Accommodation> accommodations = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     private ReservationStatus status;

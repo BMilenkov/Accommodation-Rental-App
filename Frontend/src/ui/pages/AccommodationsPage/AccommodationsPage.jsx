@@ -1,32 +1,73 @@
-import React, {useState} from 'react';
-import {Box, Button, CircularProgress} from "@mui/material";
+import React, { useState, useEffect } from 'react';
+import { Box, Button, CircularProgress, Typography } from "@mui/material";
 import useAccommodations from "../../../hooks/accommodationHooks/useAccommodations.js";
-import "./AccommodationsPage.css"
+import "./AccommodationsPage.css";
 import AccommodationsGrid from "../../components/accommodations/AccommodationsGrid/AccommodationsGrid.jsx";
 import AddAccommodationDialog from "../../components/accommodations/AddAccommodationDialog/AddAccommodationDialog.jsx";
+import CategoryFilter from "../../components/filter/CategoryFilter.jsx";
 
 const AccommodationsPage = () => {
-    const {accommodations, loading, onAdd, onEdit, onDelete} = useAccommodations();
+    const { accommodations, loading, onAdd, onEdit, onDelete } = useAccommodations();
     const [addAccommodationDialogOpen, setAddAccommodationDialogOpen] = useState(false);
+    const [filteredAccommodations, setFilteredAccommodations] = useState([]);
+    const [categories, setCategories] = useState([]);
+    const [selectedCategory, setSelectedCategory] = useState(null);
+
+    useEffect(() => {
+        if (accommodations.length) {
+            const uniqueCategories = [...new Set(accommodations.map(a => a.category))];
+            setCategories(uniqueCategories);
+            setFilteredAccommodations(accommodations);
+        }
+    }, [accommodations]);
+
+    const handleCategoryChange = (category) => {
+        setSelectedCategory(category);
+        if (category) {
+            setFilteredAccommodations(accommodations.filter(a => a.category === category));
+        } else {
+            setFilteredAccommodations(accommodations);
+        }
+    };
 
     return (
         <>
             <Box className="accommodations-box">
-                {loading && (
+                {loading ? (
                     <Box className="progress-box">
-                        <CircularProgress/>
+                        <CircularProgress />
                     </Box>
-                )}
-                {!loading &&
+                ) : (
                     <>
-                        <Box sx={{display: "flex", justifyContent: "flex-end", mb: 2}}>
-                            <Button variant="contained" color="primary" onClick={() => setAddAccommodationDialogOpen(true)}>
+                        <Box sx={{ mb: 2 }}>
+
+                            {/* Category Filter on Top */}
+                            <CategoryFilter
+                                categories={categories}
+                                selectedCategory={selectedCategory}
+                                onCategoryChange={handleCategoryChange}
+                            />
+                        </Box>
+
+                        <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={() => setAddAccommodationDialogOpen(true)}
+                            >
                                 Add Accommodation
                             </Button>
                         </Box>
-                        <AccommodationsGrid accommodations={accommodations} onEdit={onEdit} onDelete={onDelete}/>
-                    </>}
+
+                        <AccommodationsGrid
+                            accommodations={filteredAccommodations}
+                            onEdit={onEdit}
+                            onDelete={onDelete}
+                        />
+                    </>
+                )}
             </Box>
+
             <AddAccommodationDialog
                 open={addAccommodationDialogOpen}
                 onClose={() => setAddAccommodationDialogOpen(false)}

@@ -33,7 +33,7 @@ public class JwtSecurityWebConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowedOrigins(List.of("http://localhost:3000"));
+        corsConfiguration.setAllowedOrigins(List.of("http://localhost:5173"));
         corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
         corsConfiguration.setAllowedHeaders(List.of("*"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -60,11 +60,27 @@ public class JwtSecurityWebConfig {
                                         .requestMatchers(
                                                 "/api/accommodations",
                                                 "/api/accommodations/paginated",
+                                                "/api/accommodations/categories",
+//                                                "/api/accommodations/edit/**",
+//                                                "/api/accommodations/delete/**",
+                                                "/api/accommodations/{id}",
+//                                                "/api/accommodations/add",
                                                 "/api/countries",
-                                                "/api/hostProfiles"
+                                                "/api/countries/{id}",
+//                                                "api/user/nonHost",
+                                                "/api/hostProfiles",
+//                                                "/api/hostProfiles/add",
+//                                                "/api/hostProfiles/edit/**",
+//                                                "/api/hostProfiles/delete/**",
+                                                "api/hostProfiles/{id}",
+                                                "api/reservation-cart",
+                                                "api/reservation-cart/add-accommodation/{id}",
+                                                "api/reservation-cart/remove-accommodation/{id}",
+                                                "api/reservation-cart/confirm",
+                                                "api/reservation-cart/cancel"
                                         )
-                                        .permitAll()
-//                                .hasAnyRole("USER", "HOST")
+                                        .hasAnyRole("USER", "HOST")
+//                                        .permitAll()
                                         .anyRequest()
 //                                .permitAll()
                                         .hasRole("HOST")

@@ -11,7 +11,9 @@ import mk.ukim.finki.emt.service.application.UserApplicationService;
 import mk.ukim.finki.emt.service.domain.UserService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserApplicationServiceImpl implements UserApplicationService {
@@ -22,6 +24,12 @@ public class UserApplicationServiceImpl implements UserApplicationService {
     public UserApplicationServiceImpl(UserService userService, JwtHelper jwtHelper) {
         this.userService = userService;
         this.jwtHelper = jwtHelper;
+    }
+
+    @Override
+    public List<ResponseUserDto> findAll() {
+        return this.userService.findAll().stream().map(user -> new ResponseUserDto(
+                user.getUsername(), user.getName(), user.getSurname(), user.getRole())).collect(Collectors.toList());
     }
 
     @Override

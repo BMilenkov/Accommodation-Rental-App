@@ -15,6 +15,8 @@ import mk.ukim.finki.emt.service.application.UserApplicationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/user")
 @Tag(name = "User API", description = "Endpoints for user authentication and registration") // Swagger tag
@@ -25,6 +27,13 @@ public class UserController {
     public UserController(UserApplicationService userApplicationService) {
         this.userApplicationService = userApplicationService;
     }
+
+    @Operation(summary = "Get all NonHost Users", description = "Retrieves a list of all registered NonHost users.")
+    @GetMapping("/nonHost")
+    public List<ResponseUserDto> findAll() {
+        return this.userApplicationService.findAll();
+    }
+
 
     @Operation(summary = "Register a new user", description = "Creates a new user account")
     @ApiResponses(

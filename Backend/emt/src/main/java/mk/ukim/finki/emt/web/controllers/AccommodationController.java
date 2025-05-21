@@ -108,4 +108,10 @@ public class AccommodationController {
     public List<ResponseAccommodationByHostViewDto> getAccommodationsByHostStatistics() {
         return this.accommodationService.findAllAccommodationsByHostStatistics();
     }
+
+    @Operation(summary = "Get all categories", description = "Get all accommodation categories.")
+    @GetMapping("/categories")
+    public List<Category> getAllCategories() {
+        return List.of(Category.values());
+    }
 }

@@ -53,6 +53,7 @@ public class ReservationCartServiceImpl implements ReservationCartService {
             ReservationCart reservationCart = activeReservationCart.get();
             Accommodation accommodation = this.accommodationService.findById(accommodationId)
                     .orElseThrow(() -> new AccommodationNotFoundException(accommodationId));
+            System.out.println("Accommodation ID: " + accommodation.getId());
 
             boolean alreadyInCart = reservationCart.getAccommodations().stream()
                     .anyMatch(a -> a.getId().equals(accommodationId));

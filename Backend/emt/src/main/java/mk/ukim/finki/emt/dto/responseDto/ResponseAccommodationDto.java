@@ -11,7 +11,8 @@ public record ResponseAccommodationDto(
         String name,
         Category category,
         Long hostProfile,
-        Integer numRooms
+        Integer numRooms,
+        Boolean isRented
 ) {
     public static ResponseAccommodationDto from(Accommodation accommodation) {
         return new ResponseAccommodationDto(
@@ -19,7 +20,8 @@ public record ResponseAccommodationDto(
                 accommodation.getName(),
                 accommodation.getCategory(),
                 accommodation.getHostProfile().getId(),
-                accommodation.getNumRooms()
+                accommodation.getNumRooms(),
+                accommodation.getIsRented()
         );
     }
 

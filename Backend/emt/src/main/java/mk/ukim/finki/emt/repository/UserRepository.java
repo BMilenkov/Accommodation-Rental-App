@@ -40,4 +40,7 @@ public interface UserRepository extends JpaRepository<User, String> {
     )
     @Query("select u from User u")
     List<User> loadAll();
+
+    @Query("SELECT u FROM User u WHERE u NOT IN (SELECT h.user FROM HostProfile h)")
+    List<User> findNonHostUsers();
 }

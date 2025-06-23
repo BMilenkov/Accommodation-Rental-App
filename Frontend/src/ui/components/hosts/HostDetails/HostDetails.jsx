@@ -54,9 +54,10 @@ const HostDetails = () => {
                             alignItems: 'center',
                             flexDirection: 'column'
                         }}>
-                            <Avatar sx={{width: 120, height: 120, mb: 2}}>
-                                <Person fontSize="large"/>
-                            </Avatar>
+                            <Avatar
+                                alt={`${host.name} ${host.surname}`}
+                                sx={{ width: 120, height: 120, mb: 2 }}
+                            />
                             <Typography variant="h5" sx={{fontWeight: 600}}>
                                 {host.name} {host.surname}
                             </Typography>

@@ -1,25 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import { Box, Button, CircularProgress, Typography } from "@mui/material";
+import {Box, Button, CircularProgress} from "@mui/material";
 import useAccommodations from "../../../hooks/accommodationHooks/useAccommodations.js";
 import "./AccommodationsPage.css";
 import AccommodationsGrid from "../../components/accommodations/AccommodationsGrid/AccommodationsGrid.jsx";
 import AddAccommodationDialog from "../../components/accommodations/AddAccommodationDialog/AddAccommodationDialog.jsx";
 import CategoryFilter from "../../components/filter/CategoryFilter.jsx";
+import {useEffect, useState} from "react";
 
 const AccommodationsPage = () => {
-    const { accommodations, loading, onAdd, onEdit, onDelete } = useAccommodations();
+    const {accommodations, loading, categories, onAdd, onEdit, onDelete} = useAccommodations();
     const [addAccommodationDialogOpen, setAddAccommodationDialogOpen] = useState(false);
     const [filteredAccommodations, setFilteredAccommodations] = useState([]);
-    const [categories, setCategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState(null);
 
     useEffect(() => {
-        if (accommodations.length) {
-            const uniqueCategories = [...new Set(accommodations.map(a => a.category))];
-            setCategories(uniqueCategories);
-            setFilteredAccommodations(accommodations);
-        }
-    }, [accommodations]);
+        setFilteredAccommodations(
+            selectedCategory ? accommodations.filter(a => a.category === selectedCategory) : accommodations
+        );
+    }, [accommodations, selectedCategory]);
 
     const handleCategoryChange = (category) => {
         setSelectedCategory(category);
@@ -35,21 +32,11 @@ const AccommodationsPage = () => {
             <Box className="accommodations-box">
                 {loading ? (
                     <Box className="progress-box">
-                        <CircularProgress />
+                        <CircularProgress/>
                     </Box>
                 ) : (
                     <>
-                        <Box sx={{ mb: 2 }}>
-
-                            {/* Category Filter on Top */}
-                            <CategoryFilter
-                                categories={categories}
-                                selectedCategory={selectedCategory}
-                                onCategoryChange={handleCategoryChange}
-                            />
-                        </Box>
-
-                        <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
+                        <Box sx={{ display: "flex", justifyContent: "flex-start", gap: 20, mb: 2 }}>
                             <Button
                                 variant="contained"
                                 color="primary"
@@ -57,6 +44,11 @@ const AccommodationsPage = () => {
                             >
                                 Add Accommodation
                             </Button>
+                            <CategoryFilter
+                                categories={categories}
+                                selectedCategory={selectedCategory}
+                                onCategoryChange={handleCategoryChange}
+                            />
                         </Box>
 
                         <AccommodationsGrid

@@ -2,6 +2,7 @@ package mk.ukim.finki.emt.config.security;
 
 import mk.ukim.finki.emt.security.CustomUsernamePasswordAuthenticationProvider;
 import mk.ukim.finki.emt.web.filters.JwtFilter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -17,7 +18,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
-@Profile("dev")
+@Profile({"dev","prod"})
 @Configuration
 @EnableWebSecurity
 public class JwtSecurityWebConfig {
@@ -29,11 +30,13 @@ public class JwtSecurityWebConfig {
         this.authenticationProvider = authenticationProvider;
         this.jwtFilter = jwtFilter;
     }
+    @Value("${cors.allowed-origin}")
+    private String allowedOrigin;
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowedOrigins(List.of("http://localhost:5173"));
+        corsConfiguration.setAllowedOrigins(List.of(allowedOrigin)); // now dynamic
         corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
         corsConfiguration.setAllowedHeaders(List.of("*"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

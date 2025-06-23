@@ -10,6 +10,7 @@ import mk.ukim.finki.emt.constants.JwtConstants;
 import mk.ukim.finki.emt.helpers.JwtHelper;
 import mk.ukim.finki.emt.model.domain.User;
 import mk.ukim.finki.emt.service.domain.UserService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,7 +29,8 @@ public class JwtFilter extends OncePerRequestFilter {
     private final UserService userService;
     private final HandlerExceptionResolver handlerExceptionResolver;
 
-    public JwtFilter(JwtHelper jwtHelper, UserService userService, HandlerExceptionResolver handlerExceptionResolver) {
+    public JwtFilter(JwtHelper jwtHelper, UserService userService,
+                     @Qualifier("handlerExceptionResolver") HandlerExceptionResolver handlerExceptionResolver) {
         this.jwtHelper = jwtHelper;
         this.userService = userService;
         this.handlerExceptionResolver = handlerExceptionResolver;

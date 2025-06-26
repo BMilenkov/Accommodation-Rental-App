@@ -1,0 +1,10 @@
+resources:
+  - ../../base
+
+configMapGenerator:
+  - name: env-config
+    literals:
+      - spring_profile=prod
+      - DB_PORT=5432
+      - FRONTEND_HOST=
+      - FRONTEND_PORT=3000

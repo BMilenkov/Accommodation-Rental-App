@@ -31,10 +31,12 @@ services:
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - SECRET_KEY=${SECRET_KEY}
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILE:-dev}
       - BACKEND_PORT=9090
       - FRONTEND_PORT=3000
       - DB_PORT=5432
-      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILE:-dev}
+      - FRONTEND_HOST{FRONTEND_HOST}
     depends_on:
       db:
         condition: service_healthy
@@ -42,12 +44,14 @@ services:
   frontend:
     build:
       context: ./Frontend
+      args:
+        - VITE_API_URL=${VITE_API_URL}
     image: ${DOCKERHUB_USER}/accommodation-frontend:${BRANCH_NAME:-latest}
     container_name: accommodation-frontend
     ports:
       - "${FRONTEND_PORT:-3000}:3000"
     environment:
-      - VITE_BACKEND_PORT=9090
+      - VITE_API_URL=${VITE_API_URL}
     depends_on:
       - backend
 

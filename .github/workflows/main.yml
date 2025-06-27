@@ -89,13 +89,13 @@ jobs:
 
       - name: Build and push backend image
         run: |
-          docker build -t $REGISTRY/accommodation-backend:${{ needs.aws_instance_prep.outputs.branch_name }}-latest ./Backend
+          docker build --pull -t $REGISTRY/accommodation-backend:${{ needs.aws_instance_prep.outputs.branch_name }}-latest ./Backend
           docker push $REGISTRY/accommodation-backend:${{ needs.aws_instance_prep.outputs.branch_name }}-latest
 
       - name: Build and push frontend image with dynamic VITE_API_URL
         run: |
           export VITE_API_URL="http://${{ needs.aws_instance_prep.outputs.public_ip }}/api"
-          docker build \
+          docker build --pull \
             --build-arg VITE_API_URL=$VITE_API_URL \
             -t $REGISTRY/accommodation-frontend:${{ needs.aws_instance_prep.outputs.branch_name }}-latest ./Frontend
           docker push $REGISTRY/accommodation-frontend:${{ needs.aws_instance_prep.outputs.branch_name }}-latest
@@ -124,8 +124,6 @@ jobs:
             echo DOCKERHUB_USER=${{ secrets.DOCKERHUB_USERNAME }} >> .env
             echo BRANCH_NAME=${{ needs.aws_instance_prep.outputs.branch_name }} >> .env
             echo SPRING_PROFILE=${{ needs.aws_instance_prep.outputs.spring_profile }} >> .env
-
-            # ✅ Add missing envs
             echo BACKEND_PORT=9090 >> .env
             echo FRONTEND_PORT=3000 >> .env
             echo DB_PORT=5432 >> .env
@@ -136,6 +134,7 @@ jobs:
         run: |
           ssh -i ec2_key.pem -o StrictHostKeyChecking=no ec2-user@${{ needs.aws_instance_prep.outputs.public_ip }} << EOF
             cd /home/ec2-user
+            docker-compose --env-file .env pull
             docker-compose --env-file .env down || true
             docker-compose --env-file .env up -d
           EOF

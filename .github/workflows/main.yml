@@ -94,7 +94,7 @@ jobs:
 
       - name: Build and push frontend image with dynamic VITE_API_URL
         run: |
-          export VITE_API_URL="http://${{ needs.aws_instance_prep.outputs.public_ip }}/api"
+          export VITE_API_URL="http://${{ needs.aws_instance_prep.outputs.public_ip }}:9090/api"
           docker build --pull \
             --build-arg VITE_API_URL=$VITE_API_URL \
             -t $REGISTRY/accommodation-frontend:${{ needs.aws_instance_prep.outputs.branch_name }}-latest ./Frontend

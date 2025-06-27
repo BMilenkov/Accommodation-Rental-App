@@ -25,7 +25,7 @@ jobs:
       - name: Determine Spring Profile
         id: set_profile
         run: |
-          if [ "${{ github.ref_name }}" = "main" ]; then
+          if [ "${{ github.ref_name }}" = "master" ]; then
             echo "spring_profile=prod" >> "$GITHUB_OUTPUT"
           else
             echo "spring_profile=dev" >> "$GITHUB_OUTPUT"

@@ -29,6 +29,7 @@ jobs:
             echo "spring_profile=prod" >> "$GITHUB_OUTPUT"
           else
             echo "spring_profile=dev" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Configure AWS Credentials
         run: |

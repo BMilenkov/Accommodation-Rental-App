@@ -121,7 +121,6 @@ jobs:
             echo POSTGRES_USER=${{ secrets.POSTGRES_USER }} >> .env
             echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
             echo SECRET_KEY=${{ secrets.SECRET_KEY }} >> .env
-            echo VITE_API_URL=http://${{ needs.aws_instance_prep.outputs.public_ip }}/api >> .env
             echo DOCKERHUB_USER=${{ secrets.DOCKERHUB_USERNAME }} >> .env
             echo BRANCH_NAME=${{ needs.aws_instance_prep.outputs.branch_name }} >> .env
             echo SPRING_PROFILE=${{ needs.aws_instance_prep.outputs.spring_profile }} >> .env

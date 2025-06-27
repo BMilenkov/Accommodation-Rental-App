@@ -127,7 +127,7 @@ jobs:
             echo BACKEND_PORT=9090 >> .env
             echo FRONTEND_PORT=3000 >> .env
             echo DB_PORT=5432 >> .env
-            echo FRONTEND_HOST=frontend >> .env
+            echo FRONTEND_HOST=${{ needs.aws_instance_prep.outputs.public_ip }} >> .env
           EOF
 
       - name: Run docker-compose on EC2

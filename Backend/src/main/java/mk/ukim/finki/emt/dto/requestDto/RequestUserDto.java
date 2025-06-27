@@ -12,9 +12,6 @@ public record RequestUserDto(
         Role role
 ) {
 
-    /*
-        todo: add repeat password logic
-     */
     public User toUser() {
         return new User(username, password, name, surname, role);
     }

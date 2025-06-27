@@ -9,10 +9,10 @@ services:
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-    volumes:
-      - data:/var/lib/postgresql/data
-      - ./Backend/init.sql:/docker-entrypoint-initdb.d/init.sql
-      - ./Backend/views.sql:/docker-entrypoint-initdb.d/views.sql
+#    volumes:
+#      - data:/var/lib/postgresql/data
+#      - ./Backend/init.sql:/docker-entrypoint-initdb.d/init.sql
+#      - ./Backend/views.sql:/docker-entrypoint-initdb.d/views.sql
     ports:
       - "${POSTGRES_PORT:-5432}:5432"
     healthcheck:
@@ -48,5 +48,5 @@ services:
     depends_on:
       - backend
 
-volumes:
-  data:
+#volumes:
+#  data:

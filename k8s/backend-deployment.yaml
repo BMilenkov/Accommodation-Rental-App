@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: accommodation
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend
+          #image: ${DOCKERHUB_USER}/accommodation-backend:${BRANCH_NAME}-latest
+          image: bmilenkov/accommodation-backend:develop-latest
+          ports:
+            - containerPort: 9090
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              valueFrom:
+                configMapKeyRef:
+                  name: backend-config
+                  key: SPRING_PROFILES_ACTIVE
+            - name: FRONTEND_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: backend-config
+                  key: FRONTEND_HOST
+            - name: FRONTEND_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: backend-config
+                  key: FRONTEND_PORT
+            - name: DB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: backend-config
+                  key: DB_PORT
+            - name: BACKEND_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: backend-config
+                  key: BACKEND_PORT
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secret
+                  key: POSTGRES_DB
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secret
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secret
+                  key: POSTGRES_PASSWORD
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secret
+                  key: SECRET_KEY

@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: frontend
+  namespace: accommodation
 spec:
   replicas: 1
   selector:
@@ -14,6 +15,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: dummy/frontend:latest
+          #image: ${DOCKERHUB_USER}/accommodation-frontend:${BRANCH_NAME}-local
+          image: bmilenkov/accommodation-frontend:dev-local
           ports:
             - containerPort: 3000

@@ -2,23 +2,24 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: accommodation-ingress
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /$1
+  namespace: accommodation
 spec:
+  ingressClassName: traefik
   rules:
-    - http:
+    - host: localhost
+      http:
         paths:
-          - path: /api/?(.*)
+          - path: /api
             pathType: Prefix
             backend:
               service:
-                name: backend
+                name: backend-service
                 port:
                   number: 9090
-          - path: /()(.*)
+          - path: /
             pathType: Prefix
             backend:
               service:
-                name: frontend
+                name: frontend-service
                 port:
                   number: 3000
